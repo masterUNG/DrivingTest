@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,7 +63,7 @@ public class C002Section extends Activity {
         myABoolean = getIntent().getBooleanExtra("Status", false);
         if (myABoolean) {
 
-            final MyCounter timer = new MyCounter(60000,1000);
+            final MyCounter timer = new MyCounter(5000,1000);
             timer.start();
 
         }   //if
@@ -82,8 +81,7 @@ public class C002Section extends Activity {
 
         @Override
         public void onFinish() {
-            System.out.println("Timer Completed.");
-            timeTextView.setText("Timer Completed.");
+            showAnswerDialog();
         }
 
         @Override
@@ -93,17 +91,7 @@ public class C002Section extends Activity {
         }
     }
 
-    private String delayTime(int miliSec) {
-        Handler objHandler = new Handler();
 
-        objHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                strResult = "ครบแล้ว";
-            }
-        }, miliSec);
-        return strResult;
-    }
 
 
     private void C_GETxDatabase() {
@@ -200,34 +188,36 @@ public class C002Section extends Activity {
                 @Override
                 public void onClick(View v) {
 
-                    final String tAns = C_GETxScore();    // คะแนนที่ทำได้จริง
+                    showAnswerDialog();
 
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(C002Section.this);
-
-                    alertDialogBuilder.setTitle(" DrivingTest");
-                    alertDialogBuilder.setMessage("Your Score Is : " + tAns);
-                    // set positive button: Yes message
-                    alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-
-                            //Intent C002Section to ShowAnswer
-//                            Intent objIntent = new Intent(C002Section.this, ShowAnswerActivity.class);
-//                            objIntent.putExtra("Score", tAns);
-//                            startActivity(objIntent);
-
-                            finish();
-
-                        }
-                    });
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    // show alert
-                    alertDialog.show();
-                }
+                }   // event
             });
 
         } catch (Exception e) {
             Log.e("Fail", "C_SETxEventListener error : " + e.getMessage());
         }
+    }
+
+    private void showAnswerDialog() {
+
+        final String tAns = C_GETxScore();    // คะแนนที่ทำได้จริง
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(C002Section.this);
+
+        alertDialogBuilder.setTitle(" DrivingTest");
+        alertDialogBuilder.setMessage("Your Score Is : " + tAns);
+        // set positive button: Yes message
+        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+                finish();
+
+            }
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        // show alert
+        alertDialog.show();
+
     }
 
     private String C_GETxScore() {
