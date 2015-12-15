@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -209,6 +210,13 @@ public class C002Section extends Activity {
         // set positive button: Yes message
         alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+
+                if (myABoolean) {
+                    Intent objIntent = new Intent(C002Section.this, ShowAnswerActivity.class);
+                    objIntent.putExtra("Score", tAns);
+                    startActivity(objIntent);
+
+                }
 
                 finish();
 
