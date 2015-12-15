@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class C001SelectSec extends Activity {
 
@@ -47,9 +46,15 @@ public class C001SelectSec extends Activity {
             olv001SelectSec.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                    boolean bolStatus = true;
                     Intent oIntent = new Intent(C001SelectSec.this,C002Section.class);
+                    if (position == 10) {
+                        bolStatus = true;   // นี่มาจากคลิก Itme 11
+                    } else {
+                        bolStatus = false;
+                    }
                     oIntent.putExtra("tSecTion", position+1);
+                    oIntent.putExtra("Status", bolStatus);
                     startActivity(oIntent);
 
 

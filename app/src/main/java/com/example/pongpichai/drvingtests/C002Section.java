@@ -7,21 +7,20 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -34,12 +33,16 @@ public class C002Section extends Activity {
 
     private Button ocb001Finish;
     private ListView olv001ListContent;
-    private  RadioGroup org001RadioGroup;
-    private  ArrayList<DriveModel> aC_DriveModel;
-//    private ArrayList<DriveModel> aC_DriverSize;
+    private RadioGroup org001RadioGroup;
+    private ArrayList<DriveModel> aC_DriveModel;
+    //    private ArrayList<DriveModel> aC_DriverSize;
     private String[] aC_DriverSize;
     private int nC_Pos;
     private int nC_Pos1;
+    private boolean myABoolean;
+    private TextView timeTextView;
+    private int intStartTime = 60;
+    String strResult = null;
 
     private DriverAdapter oC_ListAdapter;
 
@@ -56,28 +59,73 @@ public class C002Section extends Activity {
         C_SETxEventListener();
         C_GETxDatabase();
         C_SETxAdapter();
+
+        //Receive Value Intent
+        myABoolean = getIntent().getBooleanExtra("Status", false);
+        if (myABoolean) {
+
+            final MyCounter timer = new MyCounter(60000,1000);
+            timer.start();
+
+        }   //if
+
+
+
+
+    }   // Main Method
+
+    public class MyCounter extends CountDownTimer {
+
+        public MyCounter(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onFinish() {
+            System.out.println("Timer Completed.");
+            timeTextView.setText("Timer Completed.");
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            timeTextView.setText((millisUntilFinished/1000)+"");
+            System.out.println("Timer  : " + (millisUntilFinished/1000));
+        }
     }
 
-    private void C_GETxDatabase () {
+    private String delayTime(int miliSec) {
+        Handler objHandler = new Handler();
+
+        objHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                strResult = "ครบแล้ว";
+            }
+        }, miliSec);
+        return strResult;
+    }
+
+
+    private void C_GETxDatabase() {
 
         try {
 
             mHelper = new MyDbHelper(this);
             mDb = mHelper.getWritableDatabase();
 
-            mCursor = mDb.rawQuery("SELECT " + MyDbHelper.COL_NAME + "," + MyDbHelper.COL_ANS1 +","+ MyDbHelper.COL_ANS2
+            mCursor = mDb.rawQuery("SELECT " + MyDbHelper.COL_NAME + "," + MyDbHelper.COL_ANS1 + "," + MyDbHelper.COL_ANS2
                     + "," + MyDbHelper.COL_ANS3 + "," + MyDbHelper.COL_ANS4 + "," + MyDbHelper.COL_ANST
-                    + " FROM " + MyDbHelper.TABLE_NAME + " WHERE  " +MyDbHelper.COL_CATe + " = '1'" + " ORDER BY random()" +" LIMIT 50", null);
+                    + " FROM " + MyDbHelper.TABLE_NAME + " WHERE  " + MyDbHelper.COL_CATe + " = '1'" + " ORDER BY random()" + " LIMIT 50", null);
 
             mCursor.moveToFirst();
 
             aC_DriveModel = new ArrayList<DriveModel>();
 
-            while (!mCursor.isAfterLast()){
+            while (!mCursor.isAfterLast()) {
 
                 DriveModel oDriveModel = new DriveModel();
 
-                oDriveModel.Question =  mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_NAME));
+                oDriveModel.Question = mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_NAME));
                 oDriveModel.Ans1 = mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_ANS1));
                 oDriveModel.Ans2 = mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_ANS2));
                 oDriveModel.Ans3 = mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_ANS3));
@@ -94,7 +142,7 @@ public class C002Section extends Activity {
         }
     }
 
-    private void C_SETxAdapter () {
+    private void C_SETxAdapter() {
 
         try {
 
@@ -110,17 +158,18 @@ public class C002Section extends Activity {
             }
 
 
-        } catch (Exception e){
-            Log.e("Fail","Select error : " + e.getMessage());
+        } catch (Exception e) {
+            Log.e("Fail", "Select error : " + e.getMessage());
         }
 
     }
 
-    private void C_SETxInitialWidget () {
+    private void C_SETxInitialWidget() {
 
         try {
-            olv001ListContent = (ListView)findViewById(R.id.listView1);
+            olv001ListContent = (ListView) findViewById(R.id.listView1);
             ocb001Finish = (Button) findViewById(R.id.ocb001Finish);
+            timeTextView = (TextView) findViewById(R.id.textView2);
 
 //            olv001ListContent.setOnScrollListener(new AbsListView.OnScrollListener() {
 //                @Override
@@ -140,18 +189,18 @@ public class C002Section extends Activity {
 
 
         } catch (Exception e) {
-            Log.e("Fail","C_SETxInitialWidget error : " + e.getMessage());
+            Log.e("Fail", "C_SETxInitialWidget error : " + e.getMessage());
         }
     }
 
-    private void C_SETxEventListener () {
+    private void C_SETxEventListener() {
 
         try {
             ocb001Finish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    String tAns = C_GETxScore();
+                    final String tAns = C_GETxScore();    // คะแนนที่ทำได้จริง
 
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(C002Section.this);
 
@@ -160,6 +209,11 @@ public class C002Section extends Activity {
                     // set positive button: Yes message
                     alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+
+                            //Intent C002Section to ShowAnswer
+//                            Intent objIntent = new Intent(C002Section.this, ShowAnswerActivity.class);
+//                            objIntent.putExtra("Score", tAns);
+//                            startActivity(objIntent);
 
                             finish();
 
@@ -172,18 +226,18 @@ public class C002Section extends Activity {
             });
 
         } catch (Exception e) {
-            Log.e("Fail","C_SETxEventListener error : " + e.getMessage());
+            Log.e("Fail", "C_SETxEventListener error : " + e.getMessage());
         }
     }
 
-    private String C_GETxScore () {
+    private String C_GETxScore() {
 
         try {
             int nScore = 0;
-            for (int nLoop = 0; nLoop < aC_DriveModel.size(); nLoop ++) {
+            for (int nLoop = 0; nLoop < aC_DriveModel.size(); nLoop++) {
 
                 String tAnsT = aC_DriveModel.get(nLoop).AnsT;
-                String tsizeindex =  aC_DriverSize[nLoop];
+                String tsizeindex = aC_DriverSize[nLoop];
 
                 String tAnsUser = null;
 
@@ -219,7 +273,7 @@ public class C002Section extends Activity {
 //        int countPre,countAbs,countHD;
 //        private int nC_Score;
 
-        public  DriverAdapter (Context poContext, ArrayList<DriveModel> paDriveList) {
+        public DriverAdapter(Context poContext, ArrayList<DriveModel> paDriveList) {
 
             oC_Context = poContext;
             aC_DriverModel = paDriveList;
@@ -246,7 +300,7 @@ public class C002Section extends Activity {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
 
-            LayoutInflater mInflater = (LayoutInflater)oC_Context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater mInflater = (LayoutInflater) oC_Context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 
             convertView = mInflater.inflate(R.layout.list_item, parent, false);
@@ -328,7 +382,6 @@ public class C002Section extends Activity {
                     //Toast.makeText(C002Section.this, orbTmp.getTag().toString(), Toast.LENGTH_SHORT).show();
                 }
             });
-
 
 
 //
@@ -523,9 +576,9 @@ public class C002Section extends Activity {
 //             }
 //            );
 
-                return convertView;
+            return convertView;
 
-            }
+        }
 
     }
 
