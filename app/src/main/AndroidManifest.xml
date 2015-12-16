@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pongpichai.drvingtests">
+    package="com.example.pongpichai.drvingtests" >
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".Splash"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +26,27 @@
         <activity
             android:name=".CMenu"
             android:label="@string/app_name" />
-        <activity android:name=".ShowAnswerActivity"></activity>
+        <activity android:name=".ShowAnswerActivity" />
+        <activity
+            android:name=".sit1"
+            android:label="@string/title_activity_sit1" >
+        </activity>
+        <activity
+            android:name=".exsit"
+            android:label="@string/title_activity_exsit" >
+        </activity>
+        <activity
+            android:name=".exsit2"
+            android:label="@string/title_activity_exsit2" >
+        </activity>
+        <activity
+            android:name=".exsit3"
+            android:label="@string/title_activity_exsit3" >
+        </activity>
+        <activity
+            android:name=".exsit4"
+            android:label="@string/title_activity_exsit4" >
+        </activity>
     </application>
 
 </manifest>

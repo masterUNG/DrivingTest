@@ -3,4 +3,9 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_sit1">sit1</string>
+    <string name="title_activity_exsit">exsit</string>
+    <string name="title_activity_exsit2">exsit2</string>
+    <string name="title_activity_exsit3">exsit3</string>
+    <string name="title_activity_exsit4">exsit4</string>
 </resources>

@@ -55,6 +55,11 @@ public class CMenu extends Activity {
                 @Override
                 public void onClick(View v) {
 
+                    Intent intent=new Intent(CMenu.this,sit1.class);
+
+                    startActivity(intent);
+
+
                 }
             });
 
